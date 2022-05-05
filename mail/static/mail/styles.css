@@ -1,3 +1,11 @@
 textarea {
     min-height: 400px;
 }
+
+tbody>tr>th {
+    font-weight: normal;
+}
+
+tr:hover {
+    cursor: pointer;
+}
