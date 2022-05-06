@@ -21,6 +21,12 @@ tr:hover {
     margin-bottom: 0.5rem;
 }
 
+#archive {
+    text-align: right;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
 .gray {
     background-color: #DCDCDC;
 }

@@ -27,8 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('message').innerHTML = message;
     });
 
-    event.preventDefault();
-      
+    event.preventDefault();      
   });
 
 });
@@ -126,33 +125,108 @@ function load_mailbox(mailbox) {
         email.append(subject);
         email.append(timestamp);
 
+        // Add gray background if email is read
         if (data[index]['read'] === true) {
           email.classList.add('gray');
         }
   
         email.addEventListener('click', function() {           
           // Get email
-          fetch(`http://127.0.0.1:8000/emails/${data[index]['id']}`)
+          const email_id = data[index]['id'];
+
+          fetch(`http://127.0.0.1:8000/emails/${email_id}`)
           .then(response => response.json())
           .then(data => {
+            // Show/hide
             document.querySelector('#emails-view').style.display = 'none';
             document.querySelector('#compose-view').style.display = 'none';
             document.querySelector('#email-view').style.display = 'block';
-
+            
+            // Clear out
+            document.querySelector('#archive').innerHTML = '';
+            
+            // Store email data
             const subject = data['subject'];
             const sender = data['sender'];
             const recipients = data['recipients'];
             const timestamp = data['timestamp'];
             const body = data['body'];
           
+            // Pass data to HTML file
             document.querySelector('#subject').innerHTML = `Subject: ${subject}`;
             document.querySelector('#sender').innerHTML = `From: ${sender}`;
             document.querySelector('#recipients').innerHTML = `To: ${recipients}`;
             document.querySelector('#timestamp').innerHTML = timestamp;
             document.querySelector('#body').innerHTML = body;
+
+            // If inbox mailbox, add archive button
+            if (mailbox === 'inbox') {
+              const archive_button = document.createElement('input');
+              archive_button.id = 'archive-button';
+              archive_button.classList.add('btn', 'btn-secondary', 'btn-sm');
+              archive_button.type = 'submit';
+              archive_button.formAction = `http://127.0.0.1:8000/emails/${email_id}`;
+              archive_button.value = 'Archive';
+              document.querySelector('#archive').append(archive_button);
+
+              // Archive email when button is clicked
+              archive_button.addEventListener('click', function(event) {   
+                const json_body = { 
+                  archived: 'True'
+                }
+
+                const requestOptions = {    
+                  method: 'PUT',
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify(json_body)
+                }
+
+                fetch(archive_button.formAction, requestOptions)
+                .then(response => {
+                  if (response.ok) { load_mailbox('inbox') }
+                  else { console.log("HTTP request unsuccessful for archive request") }
+                  return response
+                });
+
+                event.preventDefault();
+              })
+            }
+
+            // If archive mailbox, add unarchive button
+            if (mailbox === 'archive') {
+              const unarchive_button = document.createElement('input');
+              unarchive_button.id = 'archive-button';
+              unarchive_button.classList.add('btn', 'btn-secondary', 'btn-sm');
+              unarchive_button.type = 'submit';
+              unarchive_button.formAction = `http://127.0.0.1:8000/emails/${email_id}`;
+              unarchive_button.value = 'Unarchive';
+              document.querySelector('#archive').append(unarchive_button);
+
+              // Unarchive email when button is clicked
+              unarchive_button.addEventListener('click', function(event) {   
+                const json_body = { 
+                  archived: 'False'
+                }
+
+                const requestOptions = {    
+                  method: 'PUT',
+                  headers: {'Content-Type': 'application/json'},
+                  body: JSON.stringify(json_body)
+                }
+
+                fetch(unarchive_button.formAction, requestOptions)
+                .then(response => {
+                  if (response.ok) { load_mailbox('inbox') }
+                  else { console.log("HTTP request unsuccessful for unarchive request") }
+                  return response
+                });
+
+                event.preventDefault();
+              })
+            }
           });
 
-          // Marks as read
+          // Marks as read when email is viewed
           const json_body = { 
             read: 'True'
           }
