@@ -21,10 +21,15 @@ tr:hover {
     margin-bottom: 0.5rem;
 }
 
-#archive {
+#buttons {
     text-align: right;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+}
+
+.my-btn {
+    margin-left: 0.5rem;
+    width: 4rem;
 }
 
 .gray {

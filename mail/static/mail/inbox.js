@@ -143,7 +143,7 @@ function load_mailbox(mailbox) {
             document.querySelector('#email-view').style.display = 'block';
             
             // Clear out
-            document.querySelector('#archive').innerHTML = '';
+            document.querySelector('#buttons').innerHTML = '';
             
             // Store email data
             const subject = data['subject'];
@@ -159,15 +159,43 @@ function load_mailbox(mailbox) {
             document.querySelector('#timestamp').innerHTML = timestamp;
             document.querySelector('#body').innerHTML = body;
 
+            // For all the mailboxes, add reply button
+            const reply_button = document.createElement('input');
+            reply_button.id = 'reply-button';
+            reply_button.classList.add('btn', 'btn-secondary', 'btn-sm', 'my-btn');
+            reply_button.type = 'submit';
+            reply_button.value = 'Reply';
+            document.querySelector('#buttons').append(reply_button);
+
+            // Redirect to compose view when button is clicked
+            reply_button.addEventListener('click', function(event) {
+              // Show compose view and hide other views
+              document.querySelector('#emails-view').style.display = 'none';
+              document.querySelector('#compose-view').style.display = 'block';
+              document.querySelector('#email-view').style.display = 'none';
+
+              // Pre-fill composition fields
+              document.querySelector('#compose-recipients').value = sender;
+              document.querySelector('#compose-body').value = `\r\n \r\n \r\n --- \r\n On ${timestamp} ${sender} wrote: \r\n ${body}`;
+              if (subject.includes('Re:')) {
+                document.querySelector('#compose-subject').value = subject;
+              }
+              else {
+                document.querySelector('#compose-subject').value = `Re: ${subject}`;
+              }
+
+              event.preventDefault();
+            })
+
             // If inbox mailbox, add archive button
             if (mailbox === 'inbox') {
               const archive_button = document.createElement('input');
               archive_button.id = 'archive-button';
-              archive_button.classList.add('btn', 'btn-secondary', 'btn-sm');
+              archive_button.classList.add('btn', 'btn-secondary', 'btn-sm', 'my-btn');
               archive_button.type = 'submit';
               archive_button.formAction = `http://127.0.0.1:8000/emails/${email_id}`;
               archive_button.value = 'Archive';
-              document.querySelector('#archive').append(archive_button);
+              document.querySelector('#buttons').append(archive_button);
 
               // Archive email when button is clicked
               archive_button.addEventListener('click', function(event) {   
@@ -195,12 +223,12 @@ function load_mailbox(mailbox) {
             // If archive mailbox, add unarchive button
             if (mailbox === 'archive') {
               const unarchive_button = document.createElement('input');
-              unarchive_button.id = 'archive-button';
-              unarchive_button.classList.add('btn', 'btn-secondary', 'btn-sm');
+              unarchive_button.id = 'unarchive-button';
+              unarchive_button.classList.add('btn', 'btn-secondary', 'btn-sm', 'my-btn');
               unarchive_button.type = 'submit';
               unarchive_button.formAction = `http://127.0.0.1:8000/emails/${email_id}`;
               unarchive_button.value = 'Unarchive';
-              document.querySelector('#archive').append(unarchive_button);
+              document.querySelector('#buttons').append(unarchive_button);
 
               // Unarchive email when button is clicked
               unarchive_button.addEventListener('click', function(event) {   
@@ -250,6 +278,9 @@ function load_mailbox(mailbox) {
       })
     }
   });
+  
+
+
 
   return false;
 }
