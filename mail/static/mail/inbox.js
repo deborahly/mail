@@ -10,26 +10,32 @@ document.addEventListener('DOMContentLoaded', function() {
   load_mailbox('inbox');
 
   // Send email when form is submitted
-  const form = document.getElementById('compose-form');
-  
-  form.addEventListener('submit', function(event) {
-
+  document.querySelector('#compose-form').onsubmit = () => {
+    
     const json_body = { 
       recipients: document.getElementById('compose-recipients').value,
       subject: document.getElementById('compose-subject').value,
       body: document.getElementById('compose-body').value  
     }
+
+    const requestOptions = {       
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(json_body)
+    }
     
-    send_email('http://127.0.0.1:8000/emails', json_body)
+    fetch('http://127.0.0.1:8000/emails', requestOptions)
+    .then(response => response.json())
     .then(data => {
       load_mailbox('sent');
       const message = data['message'];
       document.getElementById('message').innerHTML = message;
     });
 
-    event.preventDefault();      
-  });
+    return false;    
+  }
 
+  return false;
 });
 
 function compose_email() {
@@ -43,18 +49,6 @@ function compose_email() {
   document.querySelector('#compose-recipients').value = '';
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
-}
-
-async function send_email(url = '', data = {}) {
-  
-  const response = await fetch(url, {    
-    
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(data)
-  });
-  
-  return response.json();
 }
 
 function load_mailbox(mailbox) {
@@ -109,15 +103,15 @@ function load_mailbox(mailbox) {
       data.forEach(function(element, index) {
         const email = document.createElement('tr');
 
-        const sender = document.createElement('th');
+        const sender = document.createElement('td');
         sender.innerHTML = data[index]['sender'];
         sender.scope = 'col';
   
-        const subject = document.createElement('th');
+        const subject = document.createElement('td');
         subject.innerHTML = data[index]['subject'];
         subject.scope = 'col';
   
-        const timestamp = document.createElement('th');
+        const timestamp = document.createElement('td');
         timestamp.innerHTML = data[index]['timestamp'];
         timestamp.scope = 'col';
   
@@ -131,7 +125,7 @@ function load_mailbox(mailbox) {
         }
   
         email.addEventListener('click', function() {           
-          // Get email
+          //Load email
           const email_id = data[index]['id'];
 
           fetch(`http://127.0.0.1:8000/emails/${email_id}`)
@@ -150,14 +144,15 @@ function load_mailbox(mailbox) {
             const sender = data['sender'];
             const recipients = data['recipients'];
             const timestamp = data['timestamp'];
-            const body = data['body'];
+            let body = data['body'];
+            let body_r = body.replaceAll('\n', '<br>');
           
             // Pass data to HTML file
             document.querySelector('#subject').innerHTML = `Subject: ${subject}`;
             document.querySelector('#sender').innerHTML = `From: ${sender}`;
             document.querySelector('#recipients').innerHTML = `To: ${recipients}`;
             document.querySelector('#timestamp').innerHTML = timestamp;
-            document.querySelector('#body').innerHTML = body;
+            document.querySelector('#body').innerHTML = body_r;
 
             // For all the mailboxes, add reply button
             const reply_button = document.createElement('input');
@@ -278,9 +273,6 @@ function load_mailbox(mailbox) {
       })
     }
   });
-  
-
-
 
   return false;
 }
