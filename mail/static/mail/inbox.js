@@ -6,22 +6,22 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
 
+  // By default, load the inbox
+  load_mailbox('inbox');
+
   // Send email when form is submitted
   document.querySelector('#form-button').addEventListener('click', (event) => {
     event.preventDefault();
     send_email();
   });
 
-  // By default, load the inbox
-  load_mailbox('inbox');
-
-  // Open email when clicked
+  // Open email when email is clicked
   emails_view = document.querySelector('#emails-view');
   emails_view.addEventListener('click', event => {
     // Find what was clicked
     const element = event.target;
 
-    // If user clicked on an email, load it and mark as read
+    // Load email and mark as read
     if (element.className === 'email') {
       const mailbox = element.dataset.mailbox;
       const email_id = element.dataset.id;
@@ -31,6 +31,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     event.preventDefault();
   });
+
+  // Add state to browser history, in order to modify url
+  header_buttons = document.querySelector('#header-buttons');
+  header_buttons.querySelectorAll('button').forEach(button => {
+    button.onclick = function() {
+      const section = this.id;
+
+      history.pushState({section: section}, '', `${section}`);
+    }
+  })
+
 });
 
 function compose_email() {
