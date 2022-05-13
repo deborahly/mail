@@ -3,7 +3,7 @@ body {
 }
 
 textarea {
-    min-height: 400px;
+    min-height: 250px;
 }
 
 tbody>tr>th {
@@ -18,6 +18,16 @@ tr:hover {
     margin-left: 0.5rem;
     margin-right: 0.5rem;
     width: 5rem;
+}
+
+.login-register-form {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.reference {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .buttons {
@@ -40,7 +50,7 @@ tr:hover {
 }
 
 .gray {
-    background-color: #DCDCDC;
+    background-color: #f3f3f3;
 }
 
 #subject {
