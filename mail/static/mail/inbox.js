@@ -37,11 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
   header_buttons.querySelectorAll('button').forEach(button => {
     button.onclick = function() {
       const section = this.id;
-
       history.pushState({section: section}, '', `${section}`);
     }
   })
-
 });
 
 function compose_email() {
@@ -59,8 +57,8 @@ function compose_email() {
 
 function load_mailbox(mailbox) {
   
-  // Show the mailbox and hide other views
-  document.querySelector('#emails-view').style.display = 'block';
+  // Hide all views temporaly
+  document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
   document.querySelector('#email-view').style.display = 'none';
 
@@ -70,9 +68,6 @@ function load_mailbox(mailbox) {
   // Clear out composition fields
   document.querySelector('thead').innerHTML = '';
   document.querySelector('tbody').innerHTML = '';
-
-  // Show the mailbox name
-  document.querySelector('#title').innerHTML = `${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}`;
 
   // Request emails from server, depending on the mailbox
   fetch(`http://127.0.0.1:8000/emails/${mailbox}`)
@@ -87,21 +82,12 @@ function load_mailbox(mailbox) {
       load_emails(mailbox, data);
     }
 
-    // emails_view = document.querySelector('#emails-view');
-      
-    //   emails_view.addEventListener('click', event => {
-    //     // Find what was clicked
-    //     const element = event.target;
-    
-    //     // If user clicked on an email, load it and mark as read
-    //     if (element.className === 'email') {
-    //       const email_id = element.dataset.id;
-    //       load_email(mailbox, email_id);
-    //       read(email_id);
-    //     }
+    // Update mailbox name
+    document.querySelector('#title').innerHTML = `${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}`;
 
-    //     event.preventDefault();
-    //   });
+    // Show the mailbox with animation
+    document.querySelector('#emails-view').style.display = 'block';
+    document.querySelector('#emails-view').style.animationPlayState = 'running'    
   });
 }
 
@@ -150,7 +136,7 @@ function load_emails(mailbox, data) {
   document.querySelector('thead').append(cols_row);
 
   // Create table body with emails 
-  data.forEach(function(element, index) {
+  data.forEach(function(element) {
     const email = document.createElement('tr');
 
     const sender = document.createElement('td');
