@@ -43,11 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function compose_email() {
-
-  // Show compose view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'none';
-  document.querySelector('#email-view').style.display = 'none';
+  // Hide all views temporaly
+  hide();
 
   // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
@@ -60,11 +57,8 @@ function compose_email() {
 }
 
 function load_mailbox(mailbox) {
-  
   // Hide all views temporaly
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'none';
-  document.querySelector('#email-view').style.display = 'none';
+  hide();
 
   // Clear message
   document.getElementById('message').innerHTML = '';
@@ -182,10 +176,8 @@ function load_email(mailbox, email_id) {
   fetch(`http://127.0.0.1:8000/emails/${email_id}`)
   .then(response => response.json())
   .then(data => {
-    // Show/hide
-    document.querySelector('#emails-view').style.display = 'none';
-    document.querySelector('#compose-view').style.display = 'none';
-    document.querySelector('#email-view').style.display = 'none';
+    // Hide all views temporaly
+    hide();
     
     // Clear out
     document.querySelector('#buttons').innerHTML = '';
@@ -243,10 +235,8 @@ function load_email(mailbox, email_id) {
 }
 
 function compose_reply(sender, subject, timestamp, body) {
-  // Show compose view and hide other views
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'none';
-  document.querySelector('#email-view').style.display = 'none';
+  // Hide all views temporaly
+  hide();
 
   // Pre-fill composition fields
   document.querySelector('#compose-recipients').value = sender;
@@ -329,7 +319,6 @@ function unarchive(email_id) {
 }
 
 function read(email_id) {
-  
     // Mark email as read
     const json_body = { 
       read: 'True'
@@ -345,4 +334,10 @@ function read(email_id) {
     .then(response => {
       return response
     });   
+}
+
+function hide() {
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
 }
