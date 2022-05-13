@@ -66,10 +66,6 @@ tr:hover {
 #emails-view {
     padding-top: 1rem;
     padding-bottom: 0.5rem;
-    animation-name: load;
-    animation-duration: 1s;
-    animation-fill-mode: forwards;
-    animation-play-state: paused;
 }
 
 #compose-view {
@@ -95,4 +91,8 @@ tr:hover {
         visibility: visible;
         opacity: 1;
     }
+}
+
+.load {
+    animation: load 0.5s ease-in-out forwards;
 }
