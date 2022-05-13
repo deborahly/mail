@@ -118,14 +118,17 @@ function load_emails(mailbox, data) {
   const sender_col = document.createElement('th')
   sender_col.innerHTML = 'From';
   sender_col.scope = 'col';
+  sender_col.style.width = '39%';
 
   const subject_col = document.createElement('th')
   subject_col.innerHTML = 'Subject';
   subject_col.scope = 'col';
+  subject_col.style.width = '39%';
 
   const timestamp_col = document.createElement('th')
   timestamp_col.innerHTML = 'Date';
   timestamp_col.scope = 'col';
+  timestamp_col.style.width = '22%';
 
   cols_row.append(sender_col);
   cols_row.append(subject_col);
@@ -201,7 +204,7 @@ function load_email(mailbox, email_id) {
     // For all the mailboxes, add reply button    
     const reply_button = document.createElement('input');
     reply_button.id = 'reply-button';
-    reply_button.classList.add('btn', 'btn-secondary', 'btn-sm', 'my-btn');
+    reply_button.classList.add('btn', 'btn-primary', 'btn-sm', 'my-btn');
     reply_button.type = 'submit';
     reply_button.value = 'Reply';
     document.querySelector('#buttons').append(reply_button);
@@ -257,7 +260,7 @@ function archive(email_id) {
   // Create button
   const archive_button = document.createElement('input');
   archive_button.id = 'archive-button';
-  archive_button.classList.add('btn', 'btn-secondary', 'btn-sm', 'my-btn');
+  archive_button.classList.add('btn', 'btn-primary', 'btn-sm', 'my-btn');
   archive_button.type = 'submit';
   archive_button.formAction = `http://127.0.0.1:8000/emails/${email_id}`;
   archive_button.value = 'Archive';
@@ -289,7 +292,7 @@ function unarchive(email_id) {
   // Create button
   const unarchive_button = document.createElement('input');
   unarchive_button.id = 'unarchive-button';
-  unarchive_button.classList.add('btn', 'btn-secondary', 'btn-sm', 'my-btn');
+  unarchive_button.classList.add('btn', 'btn-primary', 'btn-sm', 'my-btn');
   unarchive_button.type = 'submit';
   unarchive_button.formAction = `http://127.0.0.1:8000/emails/${email_id}`;
   unarchive_button.value = 'Unarchive';
